@@ -1,119 +1,109 @@
 import React, { useMemo, useState } from 'react'
 import Greeting from '../../shared/Greeting'
 import HandoffFilter from './components/HandoffFilter'
-import HandoffCard from './components/HandoffCard'
+import PatientList from './components/PatientList'
+import PatientDetailView from './components/PatientDetailView'
 import HandoffDetailPanel from './components/HandoffDetailPanel'
 import CreateHandoffCard from './components/CreateHandoffCard'
 import { MOCK_HANDOFF_CARDS } from './handoffData'
 
-const statusSummary = [
-  { label: 'Critical', color: 'bg-red-100 text-red-700', key: 'red' },
-  { label: 'Warning', color: 'bg-amber-100 text-amber-700', key: 'yellow' },
-  { label: 'Stable', color: 'bg-green-100 text-green-700', key: 'green' },
-]
-
 const Handoff = () => {
   const [cards, setCards] = useState(MOCK_HANDOFF_CARDS)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [wardFilter, setWardFilter] = useState('all')
+  const [selectedPatientId, setSelectedPatientId] = useState(null)
+  
   const [selectedCard, setSelectedCard] = useState(null)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [editingCard, setEditingCard] = useState(null)
+  const [cardTemplate, setCardTemplate] = useState(null)
 
-  const filtered = useMemo(() => {
-    return cards.filter((card) => {
-      const q = search.toLowerCase()
-      const matchSearch =
-        !search ||
-        card.patientName.toLowerCase().includes(q) ||
-        card.doctorName.toLowerCase().includes(q) ||
-        card.ward.toLowerCase().includes(q)
-      const matchStatus = statusFilter === 'all' || card.colorStatus === statusFilter
-      return matchSearch && matchStatus
+  // Derive unique patients and their latest status
+  const patientList = useMemo(() => {
+    const patientsMap = {}
+    
+    // Sort cards to find the latest info for Each patient
+    const sortedCards = [...cards].sort((a, b) => new Date(b.shiftDate) - new Date(a.shiftDate))
+    
+    sortedCards.forEach(card => {
+        if (!patientsMap[card.patientId]) {
+            patientsMap[card.patientId] = {
+                patientId: card.patientId,
+                patientName: card.patientName,
+                lastWard: card.ward,
+                lastBed: card.bed,
+                latestStatus: card.colorStatus,
+                latestDate: card.shiftDate
+            }
+        }
     })
-  }, [search, statusFilter, cards])
 
-  const counts = useMemo(() => ({
-    red: cards.filter(c => c.colorStatus === 'red').length,
-    yellow: cards.filter(c => c.colorStatus === 'yellow').length,
-    green: cards.filter(c => c.colorStatus === 'green').length,
-  }), [cards])
+    return Object.values(patientsMap).filter(p => {
+        const q = search.toLowerCase()
+        const matchSearch = !search || p.patientName.toLowerCase().includes(q) || p.patientId.toLowerCase().includes(q)
+        const matchWard = wardFilter === 'all' || p.lastWard.toLowerCase().includes(wardFilter.toLowerCase())
+        return matchSearch && matchWard
+    })
+  }, [cards, search, wardFilter])
 
   const handleCreateCard = (newCard) => {
     setCards(prev => [newCard, ...prev])
     setIsCreateOpen(false)
-  }
-
-  const handleUpdateCard = (updatedCard) => {
-    setCards(prev => prev.map(c => c.id === updatedCard.id ? updatedCard : c))
-    setSelectedCard(updatedCard) // Update detail panel view immediately
-  }
-
-  const handleRequestEdit = (card) => {
-      // Logic handled in JSX to open create modal with extra props
+    setCardTemplate(null)
   }
 
   return (
-    <div className='bg-white text-black rounded-lg pb-4 shadow h-full overflow-y-auto'>
+    <div className='bg-white text-black rounded-lg pb-4 shadow h-full overflow-y-auto flex flex-col'>
       <Greeting />
 
-      {/* Summary strip */}
-      <div className='px-4 mb-1 flex flex-wrap gap-2'>
-        {statusSummary.map(s => (
-          <span key={s.key} className={`text-xs font-semibold px-3 py-1 rounded-full ${s.color}`}>
-            {s.label}: {counts[s.key]}
-          </span>
-        ))}
-        <span className='text-xs font-semibold px-3 py-1 rounded-full bg-stone-100 text-stone-600'>
-          Total: {cards.length}
-        </span>
-      </div>
-
-      <HandoffFilter
-        search={search}
-        setSearch={setSearch}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        onCreateCard={() => setIsCreateOpen(true)}
-      />
-
-      {/* Cards Grid */}
-      {filtered.length > 0 ? (
-        <div className='px-4 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-          {filtered.map(card => (
-            <HandoffCard
-              key={card.id}
-              card={card}
-              onClick={setSelectedCard}
-              isSelected={selectedCard?.id === card.id}
-            />
-          ))}
-        </div>
+      {selectedPatientId ? (
+        <PatientDetailView 
+          patientId={selectedPatientId}
+          cards={cards}
+          onBack={() => setSelectedPatientId(null)}
+          onCreateTask={() => {
+              const latestInfo = cards.find(c => c.patientId === selectedPatientId)
+              setCardTemplate({
+                  patientName: latestInfo?.patientName || '',
+                  patientId: selectedPatientId,
+                  ward: latestInfo?.ward || '',
+                  bed: latestInfo?.bed || '',
+                  shiftDate: new Date().toISOString().split('T')[0] // Default to today
+              })
+              setIsCreateOpen(true)
+          }}
+          onSelectCard={setSelectedCard}
+          selectedCardId={selectedCard?.id}
+        />
       ) : (
-        <div className='py-16 text-center text-sm text-stone-400'>
-          No handoff cards match your filters.
-        </div>
+        <>
+            <HandoffFilter
+                search={search}
+                setSearch={setSearch}
+                wardFilter={wardFilter}
+                setWardFilter={setWardFilter}
+            />
+            <PatientList 
+                patients={patientList} 
+                onSelectPatient={setSelectedPatientId} 
+            />
+        </>
       )}
 
       {/* Detail Panel */}
       <HandoffDetailPanel
         card={selectedCard}
         onClose={() => setSelectedCard(null)}
-        onEdit={(card) => {
-            setEditingCard(card)
-            setIsCreateOpen(true)
-        }}
       />
 
-      {/* Create / Edit Modal */}
+      {/* Create Modal */}
       <CreateHandoffCard
         open={isCreateOpen}
         onClose={() => {
             setIsCreateOpen(false)
-            setEditingCard(null)
+            setCardTemplate(null)
         }}
-        initialData={editingCard}
-        onSubmit={editingCard ? handleUpdateCard : handleCreateCard}
+        initialData={cardTemplate}
+        onSubmit={handleCreateCard}
       />
     </div>
   )

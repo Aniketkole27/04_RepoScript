@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Search, Filter, Plus } from 'lucide-react'
 
-const HandoffFilter = ({ search, setSearch, statusFilter, setStatusFilter, onCreateCard }) => {
+const HandoffFilter = ({ search, setSearch, wardFilter, setWardFilter }) => {
     return (
         <div className='px-4 mt-4 mb-4 flex flex-wrap items-center gap-3'>
             {/* Search */}
@@ -16,30 +16,22 @@ const HandoffFilter = ({ search, setSearch, statusFilter, setStatusFilter, onCre
                 />
             </div>
 
-            {/* Status Filter */}
+            {/* Ward Filter */}
             <div className='flex items-center gap-2 border border-stone-300 rounded px-3 py-2 shadow-sm bg-white'>
                 <Filter size={14} className='text-stone-400 shrink-0' />
                 <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
+                    value={wardFilter}
+                    onChange={(e) => setWardFilter(e.target.value)}
                     className='text-sm outline-none bg-transparent text-stone-700 cursor-pointer'
                 >
-                    <option value='all'>All Status</option>
-                    <option value='green'>Stable</option>
-                    <option value='yellow'>Warning</option>
-                    <option value='red'>Critical</option>
+                    <option value='all'>All Wards</option>
+                    <option value='general'>General Ward</option>
+                    <option value='icu'>ICU</option>
+                    <option value='pediatrics'>Pediatrics</option>
+                    <option value='maternity'>Maternity</option>
+                    <option value='emergency'>Emergency</option>
                 </select>
             </div>
-
-            {/* Create Card Button */}
-            <button
-                type='button'
-                onClick={onCreateCard}
-                className='flex items-center gap-2 px-4 py-2 rounded bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm cursor-pointer'
-            >
-                <Plus size={15} />
-                Create Card
-            </button>
         </div>
     )
 }

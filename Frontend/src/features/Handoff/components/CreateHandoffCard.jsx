@@ -29,12 +29,12 @@ const INITIAL_FORM = {
 }
 
 const CreateHandoffCard = ({ open, onClose, onSubmit, initialData }) => {
-    const [form, setForm] = useState(initialData || INITIAL_FORM)
+    const [form, setForm] = useState({ ...INITIAL_FORM, ...initialData })
 
     // Reset form when modal opens with new data or for a fresh creation
     React.useEffect(() => {
         if (open) {
-            setForm(initialData || INITIAL_FORM)
+            setForm({ ...INITIAL_FORM, ...initialData })
         }
     }, [open, initialData])
 
@@ -68,7 +68,7 @@ const CreateHandoffCard = ({ open, onClose, onSubmit, initialData }) => {
         e.preventDefault()
         const result = {
             ...form,
-            id: initialData ? initialData.id : `H${Date.now()}`,
+            id: initialData?.id ? initialData.id : `H${Date.now()}`,
             medications: form.medications.filter(m => m.name.trim()),
             pendingActions: form.pendingActions.filter(a => a.trim()),
         }

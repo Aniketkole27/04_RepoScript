@@ -1,12 +1,24 @@
 import React from 'react'
 import { AlertCircle, AlertTriangle, Info, Clock } from 'lucide-react'
 
-const RecentAlerts = () => {
+const RecentAlerts = ({ patients }) => {
+    const criticalPatients = patients?.filter(p => p.condition === 'Critical') || []
+    
     const alerts = [
-        { id: 1, type: 'critical', title: 'ICU nearing maximum bed capacity', time: '10 mins ago', icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-100' },
-        { id: 2, type: 'warning', title: 'Doctor shift handoff pending for Ward B', time: '45 mins ago', icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
-        { id: 3, type: 'info', title: 'Routine maintenance completed in Pediatrics', time: '2 hours ago', icon: Info, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
-    ]
+        ...criticalPatients.map(p => ({
+            id: p._id,
+            type: 'critical',
+            title: `Critical Status: Patient ${p.name} in ${p.bedNumber}`,
+            time: 'Just now',
+            icon: AlertCircle,
+            color: 'text-red-600',
+            bg: 'bg-red-50',
+            border: 'border-red-100'
+        })),
+        { id: 'handoff', type: 'warning', title: 'Doctor shift handoff pending for Ward B', time: '45 mins ago', icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+        { id: 'maint', type: 'info', title: 'Routine maintenance completed in Pediatrics', time: '2 hours ago', icon: Info, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+    ].slice(0, 5) // Limit to top 5 alerts
+
 
     return (
         <div className='border rounded-lg border-stone-300 p-4 bg-white'>

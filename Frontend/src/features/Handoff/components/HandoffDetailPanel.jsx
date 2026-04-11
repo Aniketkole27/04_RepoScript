@@ -1,5 +1,5 @@
 import React from 'react'
-import { X, Stethoscope, Bed, Clock, CalendarDays, User, Edit } from 'lucide-react'
+import { X, Stethoscope, Bed, Clock, CalendarDays, User } from 'lucide-react'
 import VitalsPanel from './VitalsPanel'
 import MedicationPanel from './MedicationPanel'
 import PendingActions from './PendingActions'
@@ -51,13 +51,7 @@ const HandoffDetailPanel = ({ card, onClose }) => {
                                     <p className='text-xs text-stone-400 mt-0.5'>{card.patientId} · {card.ward} · {card.bed}</p>
                                 </div>
                                 <div className='flex items-center gap-2 shrink-0'>
-                                    <button
-                                        onClick={() => onEdit(card)}
-                                        className='flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-50 transition-colors text-xs font-medium cursor-pointer'
-                                    >
-                                        <Edit size={14} />
-                                        Edit
-                                    </button>
+
                                     <button
                                         onClick={onClose}
                                         className='p-1.5 rounded-lg hover:bg-stone-100 transition-colors text-stone-400 hover:text-stone-700 cursor-pointer'
