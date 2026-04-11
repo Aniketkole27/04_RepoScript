@@ -9,10 +9,10 @@ import Wards from '../features/Wards/Wards'
 
 const Settings = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Settings Configuration</h1></div>;
 
-const Pages = ({ user }) => {
+const Pages = () => {
     return (
         <div className="w-full h-[calc(100vh-32px)] overflow-hidden flex flex-col bg-white rounded-lg">
-            <Greeting user={user} />
+            <Greeting />
             <div className="flex-1 overflow-y-auto">
                 <Routes>
                     <Route path="/" element={<Navigate to="/dashboard" />} />

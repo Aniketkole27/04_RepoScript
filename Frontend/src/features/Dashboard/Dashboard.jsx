@@ -53,7 +53,7 @@ const Dashboard = () => {
     <div className='bg-[#FFFFFF] text-black rounded-lg pb-3 shadow h-full overflow-y-auto'>
 
       <Grid
-        patientsCount={data.patients.length}
+        patientsCount={15}
         doctorsCount={data.doctors.length}
         wardsCount={data.wards.length}
         loading={data.loading}

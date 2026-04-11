@@ -1,7 +1,8 @@
 import React from 'react'
 
-const AccountName = ({ user }) => {
-    const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('') : 'U';
+const AccountName = () => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const initials = user.name ? user.name.split(' ').map(n => n[0]).join('') : 'U';
 
     return (
         <div className='py-2'>

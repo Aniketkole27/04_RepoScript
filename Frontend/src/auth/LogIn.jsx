@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Hospital, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react'
 
-export default function LogIn({ onLogin }) {
+export default function LogIn() {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({ email: '', password: '' })
     const [loading, setLoading] = useState(false)
@@ -34,9 +34,11 @@ export default function LogIn({ onLogin }) {
             const data = await response.json()
 
             if (data.success) {
-                // Update App state immediately
-                onLogin(data.user)
+                // Store user session
+                localStorage.setItem('user', JSON.stringify(data.user))
                 navigate('/dashboard')
+                // Refresh to update App state if needed
+                window.location.reload()
             } else {
                 setApiError(data.message || 'Invalid credentials')
             }

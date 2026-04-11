@@ -16,24 +16,19 @@ function App() {
     setLoading(false)
   }, [])
 
-  const handleLogin = (userData) => {
-    setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData))
-  }
-
   if (loading) return null
 
   return (
     <Routes>
-      <Route path="/login" element={<LogIn onLogin={handleLogin} />} />
+      <Route path="/login" element={<LogIn />} />
       <Route 
         path="/*" 
         element={
           user ? (
             <div className='max-w-screen-2xl mx-auto 2xl:8px'>
               <main className='grid gap-4 p-4 grid-cols-[200px_1fr] h-screen box-border bg-blue-100'>
-                <Sidebar user={user} />
-                <Pages user={user} />
+                <Sidebar />
+                <Pages />
               </main>
             </div>
           ) : (

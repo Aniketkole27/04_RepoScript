@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Bell, TimerIcon } from 'lucide-react'
 // import { useSelector } from 'react-redux'
 
-const Greeting = ({ user }) => {
+const Greeting = () => {
     const hours = new Date().getHours()
     let greet;
     let date = `${new Date().toLocaleDateString('en-US', {
@@ -39,7 +39,8 @@ const Greeting = ({ user }) => {
         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
-    const firstName = user?.name ? user.name.split(' ')[0] : 'Professional';
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const firstName = user.name ? user.name.split(' ')[0] : 'Professional';
 
     if (hours < 12) greet = "Good Morning"
     else if (hours < 18) greet = "Good Afternoon"
@@ -50,7 +51,7 @@ const Greeting = ({ user }) => {
             <div className='flex p-0.5 items-center justify-between'>
                 <div>
                     <span className='block text-sm font-bold'>
-                        {greet}, {firstName}
+                        Rajesh Mahta
                     </span>
                     <span className='block text-xs text-stone-500'>{date}</span>
                 </div>
@@ -95,5 +96,3 @@ const Greeting = ({ user }) => {
 }
 
 export default Greeting
-
-
