@@ -1,0 +1,77 @@
+Problem statement ->
+In hospitals and clinical environments, critical patient context is often lost during shift changes, referrals, or transfers between care units, increasing the risk of delayed interventions, missed follow-ups, and medical errors.Although relevant information may exist across notes, observations, and treatment records, it is frequently fragmented, unstructured, or difficult to act upon during time-sensitive transitions.Build a secure solution that improves the safety and reliability of clinical handoffs by identifying and surfacing high-risk gaps, unresolved actions, abnormal trends, or critical changes in patient status that require immediate attention.The solution should support structured, explainable, and actionable handoff workflows rather than functioning as a simple record viewer or generic summarization tool.
+
+    
+    
+
+
+System UI
+
+    Page_1 : Login 
+        - Username input field
+        - Password input field
+        - Login button
+
+    page_2 : Dashboard
+        - Total Wards
+        - Total Patient
+        - Total Doctors
+        
+    page_3 : Patient Details
+        - After clicked on Ward
+            - Patient list with search functionality
+            - Filter options (e.g., by department, criticality)
+            - Notification center for alerts and updates
+        - After clicked on Patients
+            - patient information card (as described above)
+            - Timeline of recent events (e.g., medication changes, vital sign trends)
+            - Actionable insights and recommendations (e.g., "Patient's blood pressure has been trending upwards, consider adjusting medication")
+
+    page_4 : Handoff Workflow (cards displayed here)
+            - Display patient information cards with color-coded status indicators
+            - Highlight critical gaps or unresolved actions (e.g., "Missed dose alert for Metformin")
+            - Provide structured handoff templates for clinicians to document and communicate key information during transitions
+            - Create Card Button
+
+            - Create Cards for each patient with the following information:
+                - Doctor name
+                - Doctor/nurse shift
+                - Shift time
+                - Shift date
+                - Blood pressure
+                - Heart rate
+                - Temperature
+                - Respiratory rate
+                - Oxygen saturation
+                - Medication name and information (current medication, next dose time, missed dose alert)
+                - Sugar level
+                - Color status (Red, Yellow, Green)
+
+                -     # color status
+                        - Red: Critical condition, immediate attention needed
+                        - Yellow: Warning, monitor closely
+                        - Green: Stable condition, continue regular monitoring
+
+                        Example card:
+                        - Doctor name: Dr. Smith
+                        - Doctor/nurse shift: Dr. Smith
+                        - Shift time: 8:00 AM - 4:00 PM
+                        - Shift date: 2024-06-01
+                        - Blood pressure: 120/80 mmHg
+                        - Heart rate: 72 bpm
+                        - Temperature: 98.6°F
+                        - Respiratory rate: 16 breaths/min
+                        - Oxygen saturation: 98%
+                        - Medication name:
+                            - current medication: Metformin
+                            - Next dose time: 12:00 PM
+                            - Missed dose alert: No missed doses
+                        - Medication start date: 2024-05-01
+                        - Sugar level: 90 mg/dL
+                        - Color status: Green
+                    
+
+    page_5 : Settings
+        - User profile management
+        - Notification preferences
+        - Data privacy and security settings
