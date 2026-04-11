@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, Users, Stethoscope, CalendarCheck, Settings, Bed } from 'lucide-react'
+import { LayoutDashboard, Users, Stethoscope, CalendarCheck, Settings, Bed, HandGrab, HandFist } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 const RouteItems = ({ title, icon, to }) => {
@@ -52,9 +52,9 @@ const RouteSelect = () => {
             />
 
             <RouteItems
-                to="/appointments"
-                title={"Appointments"}
-                icon={<CalendarCheck size="16" />}
+                to={"/handoff"}
+                title={"Handoff"}
+                icon={<HandFist size="16" />}
             />
 
             <RouteItems

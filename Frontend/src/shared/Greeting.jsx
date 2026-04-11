@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Bell, TimerIcon } from 'lucide-react'
 // import { useSelector } from 'react-redux'
 
 const Greeting = () => {
@@ -12,6 +13,15 @@ const Greeting = () => {
     })}`
 
     // const profile = useSelector(state => state.currentUser.profile);
+
+    const [currentTime, setCurrentTime] = useState(new Date())
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date())
+        }, 1000)
+        return () => clearInterval(timer)
+    }, [])
 
     if (hours < 12) greet = "Good Morning"
     else if (hours < 18) greet = "Good Afternoon"
@@ -27,6 +37,24 @@ const Greeting = () => {
                         }
                     </span>
                     <span className='block text-xs text-stone-500'>{date}</span>
+                </div>
+
+                {/* Timer */}
+                <div className='flex items-center gap-5' >
+                    <div className='flex items-center gap-2 border border-stone-300 rounded px-3 py-2 shadow-sm bg-stone-50'>
+                        <span className="text-stone-500"><TimerIcon size={16} /></span>
+                        <span className="text-sm font-semibold text-stone-700 tracking-wider">
+                            {currentTime.toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                            })}
+                        </span>
+                    </div>
+                    {/* Notification icon */}
+                    <button className='p-2 rounded-full hover:bg-stone-200 transition-colors text-stone-600'>
+                        <Bell size={18} />
+                    </button>
                 </div>
             </div>
         </main>
