@@ -28,8 +28,15 @@ const INITIAL_FORM = {
     notes: '',
 }
 
-const CreateHandoffCard = ({ open, onClose, onSubmit }) => {
-    const [form, setForm] = useState(INITIAL_FORM)
+const CreateHandoffCard = ({ open, onClose, onSubmit, initialData }) => {
+    const [form, setForm] = useState(initialData || INITIAL_FORM)
+
+    // Reset form when modal opens with new data or for a fresh creation
+    React.useEffect(() => {
+        if (open) {
+            setForm(initialData || INITIAL_FORM)
+        }
+    }, [open, initialData])
 
     if (!open) return null
 
@@ -59,14 +66,13 @@ const CreateHandoffCard = ({ open, onClose, onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const newCard = {
+        const result = {
             ...form,
-            id: `H${Date.now()}`,
+            id: initialData ? initialData.id : `H${Date.now()}`,
             medications: form.medications.filter(m => m.name.trim()),
             pendingActions: form.pendingActions.filter(a => a.trim()),
         }
-        onSubmit(newCard)
-        setForm(INITIAL_FORM)
+        onSubmit(result)
         onClose()
     }
 
@@ -87,7 +93,7 @@ const CreateHandoffCard = ({ open, onClose, onSubmit }) => {
                     {/* Header */}
                     <div className='flex items-center justify-between px-6 py-4 border-b border-stone-200'>
                         <div>
-                            <h2 className='text-sm font-bold text-stone-800'>Create Handoff Card</h2>
+                            <h2 className='text-sm font-bold text-stone-800'>{initialData ? 'Update Handoff Card' : 'Create Handoff Card'}</h2>
                             <p className='text-xs text-stone-400 mt-0.5'>Fill in the patient shift handoff details</p>
                         </div>
                         <button
@@ -100,7 +106,7 @@ const CreateHandoffCard = ({ open, onClose, onSubmit }) => {
                     </div>
 
                     {/* Scrollable Form */}
-                    <form onSubmit={handleSubmit} className='flex-1 overflow-y-auto px-6 py-5 space-y-5'>
+                    <form id='handoff-form' onSubmit={handleSubmit} className='flex-1 overflow-y-auto px-6 py-5 space-y-5'>
 
                         {/* ─── Patient Info ─── */}
                         <Section title='Patient Information'>
@@ -268,7 +274,7 @@ const CreateHandoffCard = ({ open, onClose, onSubmit }) => {
                             onClick={handleSubmit}
                             className='px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer shadow-sm'
                         >
-                            Create Card
+                            {initialData ? 'Update Card' : 'Create Card'}
                         </button>
                     </div>
                 </div>

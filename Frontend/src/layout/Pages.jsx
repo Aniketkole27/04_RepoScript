@@ -3,13 +3,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from '../features/Dashboard/Dashboard';
 import Patients from '../features//Patient/Patients';
 import Doctors from '../features/Doctors/Doctors';
-import Handoff from '../features/Handsoff/Handoff';
+import Handoff from '../features/Handoff/Handoff';
+import Wards from '../features/Wards/Wards'
 
 // Placeholder components
-// const Patients = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Patients Management</h1></div>;
-// const Doctors = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Doctors Listing</h1></div>;
-const Wards = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Wards Details</h1></div>;
-// const Handoff = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Shift Handoff</h1></div>;
+// const Wards = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Wards Details</h1></div>;
 const Settings = () => <div className='bg-[#FFFFFF] p-6 shadow rounded-lg h-full'><h1>Settings Configuration</h1></div>;
 
 const Pages = () => {
@@ -20,7 +18,7 @@ const Pages = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="patients" element={<Patients />} />
                 <Route path="doctors" element={<Doctors />} />
-                <Route path="wards" element={<Wards />} />  
+                <Route path="wards" element={<Wards />} />
                 <Route path="handoff" element={<Handoff />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="*" element={<h1>404 Not Found</h1>} />
