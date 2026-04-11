@@ -3,7 +3,7 @@ import AccountName from './components/AccountName'
 import RouteSelect from './components/RouteSelect'
 import Branding from './components/Branding'
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
     return (
         <div id="sidebar" className='sticky top-4 h-[calc(100vh-32px-20px)] flex flex-col '>
             <Branding />
@@ -13,7 +13,7 @@ const Sidebar = () => {
             </div>
 
             <div className='mt-auto pt-4 border-t border-stone-200'>
-                <AccountName />
+                <AccountName user={user} />
             </div>
         </div>
     )

@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Hospital, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react'
-import axios from 'axios'
 
-export default function LogIn() {
+export default function LogIn({ onLogin }) {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({ email: '', password: '' })
     const [loading, setLoading] = useState(false)
@@ -27,20 +26,23 @@ export default function LogIn() {
         setApiError('')
 
         try {
-            // Updated to use the correct localhost port if needed, or relative path
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             })
             const data = await response.json()
+
             if (data.success) {
+                // Update App state immediately
+                onLogin(data.user)
                 navigate('/dashboard')
+            } else {
+                setApiError(data.message || 'Invalid credentials')
             }
         } catch (error) {
-            setApiError(error.response?.data?.message || 'Invalid credentials. Please try again.')
+            console.error("Login failure:", error)
+            setApiError('Network error. Is the backend running?')
         } finally {
             setLoading(false)
         }

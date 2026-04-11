@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import Greeting from '../../shared/Greeting'
 import Grid from "./components/Grid"
 import WardsOverview from './components/WardsOverview'
 import RecentAlerts from './components/RecentAlerts'
+import { useState, useEffect } from "react"
 
 const Dashboard = () => {
   const [data, setData] = useState({
@@ -15,8 +14,16 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const isDoctor = user?.role === 'doctor';
+
+        // Define dynamic patient endpoint based on role
+        const patientUrl = isDoctor
+          ? `http://localhost:5000/api/doctors/${user.id}/patients`
+          : 'http://localhost:5000/api/patients';
+
         const [pRes, dRes, wRes] = await Promise.all([
-          fetch('http://localhost:5000/api/patients'),
+          fetch(patientUrl),
           fetch('http://localhost:5000/api/doctors'),
           fetch('http://localhost:5000/api/wards')
         ])
@@ -44,9 +51,8 @@ const Dashboard = () => {
 
   return (
     <div className='bg-[#FFFFFF] text-black rounded-lg pb-3 shadow h-full overflow-y-auto'>
-      <Greeting />
-      
-      <Grid 
+
+      <Grid
         patientsCount={data.patients.length}
         doctorsCount={data.doctors.length}
         wardsCount={data.wards.length}

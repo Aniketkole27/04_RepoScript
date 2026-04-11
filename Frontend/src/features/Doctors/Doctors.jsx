@@ -11,7 +11,7 @@ const Doctors = () => {
 
   return (
     <div className='bg-white text-black rounded-lg pb-3 shadow h-full overflow-y-auto'>
-      <Greeting />
+      {/* <Greeting /> */}
       <DoctorData />
       <DoctorFilter
         search={search}

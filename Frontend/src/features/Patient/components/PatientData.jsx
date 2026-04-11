@@ -1,21 +1,20 @@
 import React from 'react'
 import { CheckCheck, Users, Activity, AlertCircle } from 'lucide-react'
 
-const PatientData = () => {
-    // const patientData = useSelector((state) => state.patientData.data)
-    const patientInfoObject = {
-        total: 124,
-        admitted: 45,
-        discharged: 72,
-        critical: 7,
+const PatientData = ({ patients, loading }) => {
+    const stats = {
+        total: loading ? '...' : patients.length,
+        stable: loading ? '...' : patients.filter(p => p.condition === 'Stable').length,
+        recovering: loading ? '...' : patients.filter(p => p.condition === 'Recovering').length,
+        critical: loading ? '...' : patients.filter(p => p.condition === 'Critical').length,
     }
 
     return (
         <div className='px-4 grid gap-3 grid-cols-4 mb-4'>
-            <LabelData color="bg-stone-100 text-stone-700" label={"Total Patients"} icon={<Users size={16} />} value={patientInfoObject.total} />
-            <LabelData color="bg-blue-50 text-blue-600" label={"Admitted Patients"} icon={<Activity size={16} />} value={patientInfoObject.admitted} />
-            <LabelData color="bg-green-100 text-green-600" label={"Discharged"} icon={<CheckCheck size={16} />} value={patientInfoObject.discharged} />
-            <LabelData color="bg-red-100 text-red-600" label={"Critical"} icon={<AlertCircle size={16} />} value={patientInfoObject.critical} />
+            <LabelData color="bg-stone-100 text-stone-700" label={"Total Patients"} icon={<Users size={16} />} value={stats.total} />
+            <LabelData color="bg-green-50 text-green-600" label={"Stable Cases"} icon={<Activity size={16} />} value={stats.stable} />
+            <LabelData color="bg-blue-100 text-blue-600" label={"Recovering"} icon={<CheckCheck size={16} />} value={stats.recovering} />
+            <LabelData color="bg-red-100 text-red-600" label={"Critical Care"} icon={<AlertCircle size={16} />} value={stats.critical} />
         </div>
     )
 }

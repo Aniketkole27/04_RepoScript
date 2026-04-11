@@ -5,14 +5,14 @@ import MedicationPanel from './MedicationPanel'
 import PendingActions from './PendingActions'
 
 const statusConfig = {
-    green:  { badge: 'bg-green-100 text-green-700',  dot: 'bg-green-400',  label: 'Stable',   bar: 'bg-green-400' },
-    yellow: { badge: 'bg-amber-100 text-amber-700',  dot: 'bg-amber-400',  label: 'Warning',  bar: 'bg-amber-400' },
-    red:    { badge: 'bg-red-100 text-red-700',      dot: 'bg-red-500',    label: 'Critical', bar: 'bg-red-500'   },
+    'Stable':   { badge: 'bg-green-100 text-green-700',  dot: 'bg-green-400',  label: 'Stable',   bar: 'bg-green-400' },
+    'Warning':  { badge: 'bg-amber-100 text-amber-700',  dot: 'bg-amber-400',  label: 'Warning',  bar: 'bg-amber-400' },
+    'Critical': { badge: 'bg-red-100 text-red-700',      dot: 'bg-red-500',    label: 'Critical', bar: 'bg-red-500'   },
 }
 
 const HandoffDetailPanel = ({ card, onClose }) => {
     const show = !!card
-    const s = card ? (statusConfig[card.colorStatus] ?? statusConfig.green) : null
+    const s = card ? (statusConfig[card.condition] ?? statusConfig['Stable']) : null
 
     return (
         <>
@@ -42,16 +42,15 @@ const HandoffDetailPanel = ({ card, onClose }) => {
                             <div className='flex items-start justify-between gap-3 px-6 py-4 border-b border-stone-100'>
                                 <div>
                                     <div className='flex items-center gap-2 flex-wrap'>
-                                        <h2 className='text-base font-bold text-stone-800'>{card.patientName}</h2>
+                                        <h2 className='text-base font-bold text-stone-800'>{card.patientId?.name || 'Details'}</h2>
                                         <span className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full ${s.badge}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full inline-block ${s.dot}`} />
                                             {s.label}
                                         </span>
                                     </div>
-                                    <p className='text-xs text-stone-400 mt-0.5'>{card.patientId} · {card.ward} · {card.bed}</p>
+                                    <p className='text-xs text-stone-400 mt-0.5'>Clinical Record &middot; ID {card.patientId?.patientId || 'N/A'}</p>
                                 </div>
                                 <div className='flex items-center gap-2 shrink-0'>
-
                                     <button
                                         onClick={onClose}
                                         className='p-1.5 rounded-lg hover:bg-stone-100 transition-colors text-stone-400 hover:text-stone-700 cursor-pointer'
@@ -66,25 +65,27 @@ const HandoffDetailPanel = ({ card, onClose }) => {
 
                                 {/* Shift Details */}
                                 <div className='bg-stone-50 border border-stone-200 rounded-lg px-4 py-3'>
-                                    <p className='text-xs font-semibold text-stone-500 uppercase tracking-wide mb-3'>Shift Details</p>
+                                    <p className='text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-3'>Clinical Context</p>
                                     <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3'>
-                                        <InfoRow icon={<Stethoscope size={12} />} label='Doctor'   value={card.doctorName} />
-                                        <InfoRow icon={<User size={12} />}        label='Nurse'    value={card.nurseName} />
-                                        <InfoRow icon={<Clock size={12} />}       label='Shift'    value={`${card.shift} · ${card.shiftTime}`} />
-                                        <InfoRow icon={<CalendarDays size={12} />}label='Date'     value={card.shiftDate} />
-                                        <InfoRow icon={<Bed size={12} />}         label='Ward/Bed' value={`${card.ward} · ${card.bed}`} />
+                                        <InfoRow icon={<Stethoscope size={12} />} label='From'   value={`Dr. ${card.fromDoctor?.name || 'N/A'}`} />
+                                        <InfoRow icon={<User size={12} />}        label='To'     value={`Dr. ${card.toDoctor?.name || 'N/A'}`} />
+                                        <InfoRow icon={<Clock size={12} />}       label='Shift'    value={`${card.shift || 'N/A'} · ${card.shiftTime || ''}`} />
+                                        <InfoRow icon={<CalendarDays size={12} />}label='Date'     value={card.shiftDate ? new Date(card.shiftDate).toLocaleDateString() : 'N/A'} />
+                                        <InfoRow icon={<Bed size={12} />}         label='Ward'     value={card.ward?.name || 'Unassigned'} />
                                     </div>
                                 </div>
 
-                                <VitalsPanel vitals={card.vitals} />
-                                <MedicationPanel medications={card.medications} startDate={card.medicationStartDate} />
+                                <VitalsPanel vitals={card.vitalsAtHandoff} />
+                                <MedicationPanel medications={card.medicationSnapshot} />
                                 <PendingActions actions={card.pendingActions} />
 
                                 {/* Clinician Notes */}
                                 {card.notes && (
                                     <div>
-                                        <p className='text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1.5'>Clinician Notes</p>
-                                        <p className='text-xs text-stone-600 bg-stone-50 border border-stone-200 rounded-lg px-3 py-2.5 leading-relaxed'>{card.notes}</p>
+                                        <p className='text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1.5'>Observations & Notes</p>
+                                        <p className='text-xs text-stone-600 bg-blue-50/30 border border-blue-100 rounded-lg px-3 py-2.5 leading-relaxed italic'>
+                                            "{card.notes}"
+                                        </p>
                                     </div>
                                 )}
                             </div>
@@ -98,10 +99,10 @@ const HandoffDetailPanel = ({ card, onClose }) => {
 
 const InfoRow = ({ icon, label, value }) => (
     <div className='flex items-start gap-1.5'>
-        <span className='text-stone-400 mt-0.5 shrink-0'>{icon}</span>
+        <span className='text-stone-300 mt-0.5 shrink-0'>{icon}</span>
         <div>
-            <p className='text-[10px] text-stone-400 leading-none'>{label}</p>
-            <p className='text-xs font-medium text-stone-700 mt-0.5'>{value}</p>
+            <p className='text-[9px] font-bold text-stone-400 leading-none uppercase tracking-tighter'>{label}</p>
+            <p className='text-[11px] font-bold text-stone-700 mt-0.5 capitalize'>{value}</p>
         </div>
     </div>
 )

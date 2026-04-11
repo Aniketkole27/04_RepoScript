@@ -1,20 +1,21 @@
 import React from 'react'
 import { Hotel, Bed, CheckCircle2, AlertCircle } from 'lucide-react'
 
-const WardData = () => {
-    const wardStats = {
-        totalBeds: 250,
-        occupiedBeds: 184,
-        availableBeds: 56,
-        underMaintenance: 10,
+const WardData = ({ wards, loading }) => {
+    const stats = {
+        total: loading ? '...' : wards.reduce((acc, w) => acc + w.totalBeds, 0),
+        occupied: loading ? '...' : wards.reduce((acc, w) => acc + w.occupiedBeds, 0),
+        maintenance: loading ? '...' : wards.reduce((acc, w) => acc + w.inmentanaceBeds, 0),
     }
+    
+    const available = loading ? '...' : (stats.total - stats.occupied - stats.maintenance);
 
     return (
         <div className='px-4 grid gap-3 grid-cols-4 mb-4'>
-            <LabelData color="bg-stone-100 text-stone-700" label={"Total Beds"} icon={<Hotel size={16} />} value={wardStats.totalBeds} />
-            <LabelData color="bg-blue-50 text-blue-600" label={"Occupied"} icon={<Bed size={16} />} value={wardStats.occupiedBeds} />
-            <LabelData color="bg-green-50 text-green-600" label={"Available"} icon={<CheckCircle2 size={16} />} value={wardStats.availableBeds} />
-            <LabelData color="bg-orange-50 text-orange-600" label={"Maintenance"} icon={<AlertCircle size={16} />} value={wardStats.underMaintenance} />
+            <LabelData color="bg-stone-100 text-stone-700" label={"Total Capacity"} icon={<Hotel size={16} />} value={stats.total} />
+            <LabelData color="bg-blue-50 text-blue-600" label={"Occupied"} icon={<Bed size={16} />} value={stats.occupied} />
+            <LabelData color="bg-green-50 text-green-600" label={"Available"} icon={<CheckCircle2 size={16} />} value={available} />
+            <LabelData color="bg-orange-50 text-orange-600" label={"Maintenance"} icon={<AlertCircle size={16} />} value={stats.maintenance} />
         </div>
     )
 }

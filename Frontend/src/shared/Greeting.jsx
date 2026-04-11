@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Bell, TimerIcon } from 'lucide-react'
 // import { useSelector } from 'react-redux'
 
-const Greeting = () => {
+const Greeting = ({ user }) => {
     const hours = new Date().getHours()
     let greet;
     let date = `${new Date().toLocaleDateString('en-US', {
@@ -39,6 +39,8 @@ const Greeting = () => {
         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
+    const firstName = user?.name ? user.name.split(' ')[0] : 'Professional';
+
     if (hours < 12) greet = "Good Morning"
     else if (hours < 18) greet = "Good Afternoon"
     else greet = "Good Night"
@@ -48,9 +50,7 @@ const Greeting = () => {
             <div className='flex p-0.5 items-center justify-between'>
                 <div>
                     <span className='block text-sm font-bold'>
-                        {
-                            "Aniket Kole"
-                        }
+                        {greet}, {firstName}
                     </span>
                     <span className='block text-xs text-stone-500'>{date}</span>
                 </div>

@@ -1,112 +1,155 @@
-import React, { useMemo, useState } from 'react'
-import Greeting from '../../shared/Greeting'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import HandoffFilter from './components/HandoffFilter'
 import PatientList from './components/PatientList'
 import PatientDetailView from './components/PatientDetailView'
 import HandoffDetailPanel from './components/HandoffDetailPanel'
 import CreateHandoffCard from './components/CreateHandoffCard'
-import { MOCK_HANDOFF_CARDS } from './handoffData'
+import { Loader2 } from 'lucide-react'
 
 const Handoff = () => {
-  const [cards, setCards] = useState(MOCK_HANDOFF_CARDS)
-  const [search, setSearch] = useState('')
-  const [wardFilter, setWardFilter] = useState('all')
-  const [selectedPatientId, setSelectedPatientId] = useState(null)
-  
-  const [selectedCard, setSelectedCard] = useState(null)
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [cardTemplate, setCardTemplate] = useState(null)
+    const location = useLocation()
+    const [patients, setPatients] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [selectedPatientData, setSelectedPatientData] = useState(null)
+    
+    const [search, setSearch] = useState('')
+    const [wardFilter, setWardFilter] = useState('all')
+    const [selectedPatientId, setSelectedPatientId] = useState(location.state?.autoSelectId || null)
+    
+    const [selectedCard, setSelectedCard] = useState(null)
+    const [isCreateOpen, setIsCreateOpen] = useState(false)
+    const [cardTemplate, setCardTemplate] = useState(null)
 
-  // Derive unique patients and their latest status
-  const patientList = useMemo(() => {
-    const patientsMap = {}
-    
-    // Sort cards to find the latest info for Each patient
-    const sortedCards = [...cards].sort((a, b) => new Date(b.shiftDate) - new Date(a.shiftDate))
-    
-    sortedCards.forEach(card => {
-        if (!patientsMap[card.patientId]) {
-            patientsMap[card.patientId] = {
-                patientId: card.patientId,
-                patientName: card.patientName,
-                lastWard: card.ward,
-                lastBed: card.bed,
-                latestStatus: card.colorStatus,
-                latestDate: card.shiftDate
+    // 1. Fetch Overview Patient List
+    useEffect(() => {
+        const fetchOverview = async () => {
+            try {
+                setLoading(true)
+                const response = await fetch('http://localhost:5000/api/patients')
+                const data = await response.json()
+                if (data.success) {
+                    setPatients(data.data)
+                }
+            } catch (error) {
+                console.error("Handoff overview fetch failed:", error)
+            } finally {
+                setLoading(false)
             }
         }
-    })
+        fetchOverview()
+    }, [])
 
-    return Object.values(patientsMap).filter(p => {
+    // 2. Fetch Detailed History when patient selected
+    useEffect(() => {
+        if (!selectedPatientId) {
+            setSelectedPatientData(null)
+            return
+        }
+
+        const fetchHistory = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/api/patients/${selectedPatientId}/history`)
+                const data = await response.json()
+                if (data.success) {
+                    setSelectedPatientData(data.data)
+                }
+            } catch (error) {
+                console.error("History fetch failed:", error)
+            }
+        }
+        fetchHistory()
+    }, [selectedPatientId])
+
+    // Filtering Logic
+    const filteredPatients = patients.filter(p => {
         const q = search.toLowerCase()
-        const matchSearch = !search || p.patientName.toLowerCase().includes(q) || p.patientId.toLowerCase().includes(q)
-        const matchWard = wardFilter === 'all' || p.lastWard.toLowerCase().includes(wardFilter.toLowerCase())
+        const matchSearch = !search || p.name.toLowerCase().includes(q) || p.patientId.toLowerCase().includes(q)
+        const matchWard = wardFilter === 'all' || 
+                          p.currentWard?.name?.toLowerCase().includes(wardFilter.toLowerCase())
         return matchSearch && matchWard
     })
-  }, [cards, search, wardFilter])
 
-  const handleCreateCard = (newCard) => {
-    setCards(prev => [newCard, ...prev])
-    setIsCreateOpen(false)
-    setCardTemplate(null)
-  }
+    const handleCreateCard = async (newCardData) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/patients/${selectedPatientId}/handoff`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newCardData)
+            })
+            const data = await response.json()
+            
+            if (data.success) {
+                // Refresh history
+                const resHistory = await fetch(`http://localhost:5000/api/patients/${selectedPatientId}/history`)
+                const historyData = await resHistory.json()
+                if (historyData.success) setSelectedPatientData(historyData.data)
+                
+                setIsCreateOpen(false)
+                setSelectedCard(null)
+            } else {
+                console.error("Handoff validation failed:", data.message)
+                alert(`Error: ${data.message || 'Validation failed'}`)
+            }
+        } catch (error) {
+            console.error("Network or catch-all failure:", error)
+        }
+    }
 
-  return (
-    <div className='bg-white text-black rounded-lg pb-4 shadow h-full overflow-y-auto flex flex-col'>
-      <Greeting />
+    return (
+        <div className='bg-white text-black rounded-lg pb-4 shadow h-full overflow-y-auto flex flex-col'>
+            {loading ? (
+                <div className='flex-1 flex flex-col items-center justify-center text-stone-400 py-20'>
+                    <Loader2 className='animate-spin mb-2' size={32} />
+                    <p className='text-xs font-bold uppercase tracking-widest'>Syncing Handoff Registry...</p>
+                </div>
+            ) : selectedPatientId ? (
+                <PatientDetailView 
+                    patient={selectedPatientData}
+                    onBack={() => setSelectedPatientId(null)}
+                    onCreateTask={() => {
+                        setCardTemplate({
+                            patientName: selectedPatientData?.name || '',
+                            patientId: selectedPatientData?.patientId,
+                            ward: selectedPatientData?.currentWard?._id,
+                            bed: selectedPatientData?.bedNumber,
+                        })
+                        setIsCreateOpen(true)
+                    }}
+                    onSelectCard={setSelectedCard}
+                    selectedCardId={selectedCard?._id}
+                />
+            ) : (
+                <>
+                    <HandoffFilter
+                        search={search}
+                        setSearch={setSearch}
+                        wardFilter={wardFilter}
+                        setWardFilter={setWardFilter}
+                    />
+                    <PatientList 
+                        patients={filteredPatients} 
+                        onSelectPatient={setSelectedPatientId} 
+                    />
+                </>
+            )}
 
-      {selectedPatientId ? (
-        <PatientDetailView 
-          patientId={selectedPatientId}
-          cards={cards}
-          onBack={() => setSelectedPatientId(null)}
-          onCreateTask={() => {
-              const latestInfo = cards.find(c => c.patientId === selectedPatientId)
-              setCardTemplate({
-                  patientName: latestInfo?.patientName || '',
-                  patientId: selectedPatientId,
-                  ward: latestInfo?.ward || '',
-                  bed: latestInfo?.bed || '',
-                  shiftDate: new Date().toISOString().split('T')[0] // Default to today
-              })
-              setIsCreateOpen(true)
-          }}
-          onSelectCard={setSelectedCard}
-          selectedCardId={selectedCard?.id}
-        />
-      ) : (
-        <>
-            <HandoffFilter
-                search={search}
-                setSearch={setSearch}
-                wardFilter={wardFilter}
-                setWardFilter={setWardFilter}
+            <HandoffDetailPanel
+                card={selectedCard}
+                onClose={() => setSelectedCard(null)}
             />
-            <PatientList 
-                patients={patientList} 
-                onSelectPatient={setSelectedPatientId} 
+
+            <CreateHandoffCard
+                open={isCreateOpen}
+                onClose={() => {
+                    setIsCreateOpen(false)
+                    setCardTemplate(null)
+                }}
+                initialData={cardTemplate}
+                onSubmit={handleCreateCard}
             />
-        </>
-      )}
-
-      {/* Detail Panel */}
-      <HandoffDetailPanel
-        card={selectedCard}
-        onClose={() => setSelectedCard(null)}
-      />
-
-      {/* Create Modal */}
-      <CreateHandoffCard
-        open={isCreateOpen}
-        onClose={() => {
-            setIsCreateOpen(false)
-            setCardTemplate(null)
-        }}
-        initialData={cardTemplate}
-        onSubmit={handleCreateCard}
-      />
-    </div>
-  )
+        </div>
+    )
 }
 
 export default Handoff
