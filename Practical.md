@@ -273,3 +273,219 @@ The mathematical equation of Simple Linear Regression is:
 
 ```math
 y = mx + c
+
+Where:
+- `y` = Dependent variable
+- `x` = Independent variable
+- `m` = Slope of line
+- `c` = Intercept
+
+## Working of Simple Linear Regression
+- The algorithm identifies relationship between input and output variables.
+- It finds the best-fit line that minimizes prediction error.
+- Predictions are made based on learned relationship from dataset.
+- The model accuracy depends on quality of dataset and relationship between variables.
+
+## Diabetes Dataset
+- Diabetes dataset contains medical information related to patients.
+- It is used to analyze and predict diabetes-related values.
+- Features such as age, BMI and blood pressure are used for prediction.
+- Regression helps in understanding effect of variables on diabetes progression.
+
+## Advantages of Simple Linear Regression
+- Easy to understand and implement.
+- Useful for predicting continuous values.
+- Helps identify relationship between variables.
+- Requires less computational power.
+
+## Applications of Linear Regression
+- Medical prediction systems
+- Sales forecasting
+- Stock market analysis
+- Weather prediction
+- Business analytics
+
+## Importance of Regression Analysis
+- Helps in predictive analysis.
+- Useful in understanding trends and relationships in data.
+- Improves decision making using statistical predictions.
+- Widely used in Machine Learning and Data Science applications.
+
+## Conclusion
+Successfully implemented Simple Linear Regression using diabetes dataset. Learned prediction of continuous values and relationship analysis between dependent and independent variables. Simple Linear Regression is an effective supervised Machine Learning algorithm used for predictive analysis applications.
+
+---
+
+# Practical No. 5
+# Implementation of Multiple Linear Regression for House Price Prediction using Scikit-Learn
+
+## Aim
+To implement Multiple Linear Regression for predicting house prices using Scikit-Learn.
+
+## Objective
+- To understand the concept of Multiple Linear Regression.
+- To predict house prices using multiple independent variables.
+- To analyze relationship between different features and output value.
+- To study regression model using Scikit-Learn library.
+
+## Outcome
+- Learned implementation of Multiple Linear Regression algorithm.
+- Understood prediction using multiple input variables.
+- Learned house price prediction analysis.
+- Improved knowledge of supervised Machine Learning techniques.
+
+## Algorithm
+1. Start the program.
+2. Import required Python libraries.
+3. Load house price dataset.
+4. Select independent and dependent variables.
+5. Split dataset into training and testing data.
+6. Train Multiple Linear Regression model.
+7. Predict house prices using trained model.
+8. Compare actual and predicted outputs.
+9. Display prediction results.
+10. Stop the program.
+
+## Theory
+
+### Introduction
+- Multiple Linear Regression is a supervised Machine Learning algorithm.
+- It is used to predict continuous values using multiple independent variables.
+- It establishes relationship between several input variables and one output variable.
+- It is an extension of Simple Linear Regression.
+
+### Multiple Linear Regression Equation
+
+```math
+y = b_0 + b_1x_1 + b_2x_2 + \dots + b_nx_n
+
+Where:
+- `y` = Dependent variable
+- `x₁, x₂, ... xₙ` = Independent variables
+- `b₀` = Intercept
+- `b₁, b₂, ... bₙ` = Regression coefficients
+
+## Working of Multiple Linear Regression
+- The algorithm takes multiple input variables for prediction.
+- It identifies relationship between inputs and output variable.
+- Regression coefficients are calculated for each feature.
+- Predictions are made using learned relationships from training data.
+- The best-fit regression model minimizes prediction error.
+
+## House Price Prediction
+- House price prediction uses features such as area, number of bedrooms, location and floor count.
+- Multiple features affect the final price of house.
+- Regression model predicts price based on these features.
+- It helps in real estate analysis and decision making.
+
+## Advantages of Multiple Linear Regression
+- Handles multiple input variables effectively.
+- Useful for prediction and forecasting problems.
+- Helps understand importance of different features.
+- Easy to implement using Scikit-Learn library.
+
+## Applications of Multiple Linear Regression
+- House price prediction
+- Sales forecasting
+- Financial analysis
+- Business analytics
+- Medical data prediction
+
+## Importance of Regression Analysis
+- Helps in predicting future values accurately.
+- Useful in analyzing relationships among variables.
+- Improves data-driven decision making.
+- Widely used in Machine Learning and Data Science applications.
+
+## Conclusion
+Successfully implemented Multiple Linear Regression for house price prediction using Scikit-Learn. Learned prediction using multiple independent variables and understood relationship analysis between features and output values. Multiple Linear Regression is useful for predictive analysis and forecasting applications.
+
+---
+
+# Practical No. 6
+# Implementation of Naïve Bayes Classification Algorithm and Performance Evaluation
+
+## Aim
+To implement Naïve Bayes classification algorithm and evaluate its performance.
+
+## Objective
+- To understand the concept of Naïve Bayes classification algorithm.
+- To classify data using probabilistic approach.
+- To study performance evaluation of classification model.
+- To understand supervised Machine Learning classification techniques.
+
+## Outcome
+- Learned implementation of Naïve Bayes algorithm.
+- Understood probabilistic classification method.
+- Learned classification of dataset into different classes.
+- Improved knowledge of supervised Machine Learning algorithms.
+
+## Algorithm
+1. Start the program.
+2. Import required Python libraries.
+3. Load the dataset.
+4. Split dataset into training and testing data.
+5. Train Naïve Bayes classifier using training dataset.
+6. Predict output classes using testing dataset.
+7. Evaluate model performance using accuracy score.
+8. Display classification results.
+9. Stop the program.
+
+## Theory
+
+### Introduction
+- Naïve Bayes is a supervised Machine Learning classification algorithm.
+- It is based on Bayes Theorem and probability concepts.
+- The algorithm assumes that all features are independent of each other.
+- It is simple, fast and efficient for classification problems.
+
+### Bayes Theorem
+
+```math
+P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+
+Where:
+- `P(A|B)` = Posterior probability
+- `P(B|A)` = Likelihood probability
+- `P(A)` = Prior probability
+- `P(B)` = Evidence probability
+
+## Working of Naïve Bayes Algorithm
+- The algorithm calculates probability for each class.
+- It predicts the class having highest probability.
+- It uses training data to learn probability distribution.
+- The independence assumption simplifies calculations.
+- It performs well even with large datasets.
+
+## Types of Naïve Bayes
+- Gaussian Naïve Bayes – used for continuous data.
+- Multinomial Naïve Bayes – used for text classification.
+- Bernoulli Naïve Bayes – used for binary data.
+
+## Performance Evaluation
+- Accuracy is used to measure classifier performance.
+- Accuracy represents correctly predicted instances.
+- Confusion matrix helps analyze prediction results.
+- High accuracy indicates better model performance.
+
+## Advantages of Naïve Bayes
+- Simple and easy to implement.
+- Fast training and prediction process.
+- Works well with large datasets.
+- Performs efficiently for text classification problems.
+
+## Applications of Naïve Bayes
+- Spam email filtering
+- Sentiment analysis
+- Document classification
+- Medical diagnosis
+- Recommendation systems
+
+## Importance of Classification Algorithms
+- Helps in predicting categorical outputs.
+- Useful in decision making and pattern recognition.
+- Widely used in Machine Learning and Artificial Intelligence applications.
+- Improves automation and data analysis processes.
+
+## Conclusion
+Successfully implemented Naïve Bayes classification algorithm and evaluated its performance. Learned probabilistic classification technique and prediction of categorical data using Bayes Theorem. Naïve Bayes is an efficient supervised Machine Learning algorithm widely used in classification applications.
